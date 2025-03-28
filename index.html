@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questões - Lei Orgânica de SJBV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+    .questao {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 2rem;
+    }
+    .alternativas {
+      margin-top: 1rem;
+    }
+    .alternativa {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .alternativa:hover {
+      background: #f0f0f0;
+    }
+    .alternativa.selecionada {
+      border-color: #2196f3;
+      background: #e3f2fd;
+    }
+    .alternativa.correta {
+      color: #2e7d32;
+      border-color: #2e7d32;
+      background: #e8f5e9;
+    }
+    .alternativa.errada {
+      color: #c62828;
+      border-color: #c62828;
+      background: #ffebee;
+    }
+    .feedback {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .feedback.correto {
+      color: #2e7d32;
+    }
+    .feedback.errado {
+      color: #c62828;
+    }
+    .botao {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+  <label for="filtro">Filtrar por Título:</label>
+  <select id="filtro" onchange="filtrarQuestoes()">
+    <option value="todos">Todos</option>
+    <option value="Título I">Título I – Disposições Preliminares</option>
+    <option value="Título II">Título II – Da Organização do Município</option>
+    <option value="Título III">Título III – Da Organização dos Poderes</option>
+    <option value="Título IV">Título IV – Da Administração Municipal</option>
+    <option value="Título V">Título V – Da Ordem Econômica e Social</option>
+    <option value="Título VI">Título VI – Disposições Gerais e Transitórias</option>
+  </select>
+  <hr>
+<div id="quiz"></div>
+
+  <script>
+    const questoes = [
+      // TÍTULO IV – DA ADMINISTRAÇÃO MUNICIPAL
+      { titulo: "Título IV", enunciado: "A administração pública municipal direta e indireta obedecerá aos princípios de:",
+        alternativas: [
+          "Liberdade, igualdade e fraternidade.",
+          "Legalidade, impessoalidade, moralidade, publicidade e eficiência.",
+          "Simplicidade, liberdade, transparência e responsabilidade.",
+          "Segurança, competência, razoabilidade e justiça.",
+          "Prudência, formalidade, tradição e controle."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "O que constitui patrimônio do Município?",
+        alternativas: [
+          "Apenas os bens imóveis.",
+          "Somente as verbas públicas.",
+          "Todos os bens, direitos e rendas adquiridos.",
+          "Apenas os bens do Prefeito em exercício.",
+          "Somente os prédios públicos."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "Quem pode dispor sobre a organização e funcionamento da administração municipal?",
+        alternativas: [
+          "O Presidente da República.",
+          "O Governador do Estado.",
+          "O Prefeito, mediante decreto.",
+          "O Tribunal de Contas.",
+          "O Ministério Público."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "A criação de entidades da administração indireta depende de:",
+        alternativas: [
+          "Decreto do Prefeito.",
+          "Resolução da Câmara.",
+          "Lei específica.",
+          "Autorização da União.",
+          "Aprovação popular em referendo."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "É vedado ao servidor público municipal acumular:",
+        alternativas: [
+          "Funções de confiança.",
+          "Dois cargos públicos de professor.",
+          "Cargos técnicos e administrativos.",
+          "Mais de um cargo, salvo nas exceções legais.",
+          "Cargo com mandato eletivo de vereador."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "A publicidade dos atos, programas, obras, serviços e campanhas dos órgãos públicos deve ter caráter:",
+        alternativas: [
+          "Educativo, informativo ou de orientação social.",
+          "Político e promocional.",
+          "Partidário e opinativo.",
+          "Comercial e institucional.",
+          "Religioso e ideológico."
+        ],
+        correta: 0
+      },
+      { titulo: "Título IV", enunciado: "Qual o prazo máximo para o servidor público tomar posse após nomeação?",
+        alternativas: [
+          "15 dias.",
+          "30 dias.",
+          "60 dias.",
+          "45 dias.",
+          "90 dias."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "Os cargos em comissão destinam-se a:",
+        alternativas: [
+          "Funções técnicas.",
+          "Cargos efetivos.",
+          "Serviços operacionais.",
+          "Atribuições de direção, chefia e assessoramento.",
+          "Cargos concursados."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "A investidura em cargo ou emprego público depende de:",
+        alternativas: [
+          "Ato do Prefeito.",
+          "Indicação política.",
+          "Aprovação em concurso público.",
+          "Nomeação por vereador.",
+          "Recomendação do Governador."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "A revisão geral da remuneração dos servidores públicos deverá ocorrer:",
+        alternativas: [
+          "A cada dois anos.",
+          "Somente em ano eleitoral.",
+          "Por decreto legislativo.",
+          "Anualmente, sempre na mesma data.",
+          "Com aprovação do Tribunal de Contas."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "A administração pública municipal deve dar preferência a bens e serviços com origem:",
+        alternativas: [
+          "No exterior.",
+          "No Estado.",
+          "No Município.",
+          "Na União.",
+          "Nos países do Mercosul."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "A remuneração dos agentes políticos é fixada por:",
+        alternativas: [
+          "Lei de iniciativa popular.",
+          "Decreto do Prefeito.",
+          "Ato do Presidente da Câmara.",
+          "Lei específica.",
+          "Regulamento interno da Câmara."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "Os atos de improbidade administrativa importam em:",
+        alternativas: [
+          "Promoção funcional.",
+          "Reconhecimento público.",
+          "Suspensão temporária.",
+          "Perda da função pública e indisponibilidade dos bens.",
+          "Apenas advertência."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "Os concursos públicos terão validade de até:",
+        alternativas: [
+          "1 ano, prorrogável por mais 1.",
+          "2 anos, prorrogável por igual período.",
+          "3 anos, sem prorrogação.",
+          "5 anos, prorrogável por 2.",
+          "4 anos, sem prorrogação."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "A criação de cargos públicos depende de:",
+        alternativas: [
+          "Resolução da Câmara.",
+          "Decreto do Prefeito.",
+          "Aprovação do Tribunal de Contas.",
+          "Lei municipal.",
+          "Consulta pública."
+        ],
+        correta: 3
+      },
+      { titulo: "Título IV", enunciado: "A nomeação para cargos em comissão deve recair preferencialmente em:",
+        alternativas: [
+          "Candidatos aprovados em concursos.",
+          "Servidores efetivos.",
+          "Parentes do Prefeito.",
+          "Vereadores licenciados.",
+          "Contratados temporários."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "A concessão de aposentadoria aos servidores será realizada com base na:",
+        alternativas: [
+          "Lei Orgânica apenas.",
+          "Constituição Federal e legislação complementar.",
+          "Resolução da Câmara.",
+          "Convenção coletiva.",
+          "Norma estadual exclusiva."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "É permitida contratação por tempo determinado para atender a:",
+        alternativas: [
+          "Demandas políticas.",
+          "Necessidade temporária de interesse público.",
+          "Interesse pessoal do Prefeito.",
+          "Projetos culturais apenas.",
+          "Campanhas eleitorais."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "Os servidores públicos têm direito à:",
+        alternativas: [
+          "Remuneração variável.",
+          "Estabilidade após 2 anos.",
+          "Estabilidade após 3 anos de efetivo exercício.",
+          "Promoção automática a cada ano.",
+          "Afastamento sem justificativa."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "A exoneração de cargo em comissão ocorre:",
+        alternativas: [
+          "Somente por decisão judicial.",
+          "Por concurso público.",
+          "A qualquer tempo, sem necessidade de justificativa.",
+          "Após processo administrativo.",
+          "Com autorização da Câmara."
+        ],
+        correta: 2
+      },
+      // TÍTULO III – DA ORGANIZAÇÃO DOS PODERES
+      // TÍTULO I – DISPOSIÇÕES PRELIMINARES
+      { titulo: "Título I", enunciado: "A Lei Orgânica do Município de São João da Boa Vista foi promulgada com base em qual fundamento constitucional?",
+        alternativas: [
+          "Na Constituição Estadual.",
+          "Na Constituição da República Federativa do Brasil de 1988.",
+          "No Código Civil Brasileiro.",
+          "Na Lei de Responsabilidade Fiscal.",
+          "No Estatuto das Cidades."
+        ],
+        correta: 1 },
+      { titulo: "Título I", enunciado: "De acordo com a Lei Orgânica, o Município de São João da Boa Vista integra qual esfera da Federação?",
+        alternativas: [
+          "Apenas a União.",
+          "Apenas o Estado.",
+          "A Federação e a União, exclusivamente.",
+          "A Federação, como ente autônomo.",
+          "A Confederação Nacional dos Municípios."
+        ],
+        correta: 3 },
+
+      // TÍTULO II – DA ORGANIZAÇÃO DO MUNICÍPIO
+      { titulo: "Título II", enunciado: "A autonomia do Município de São João da Boa Vista é assegurada pela Constituição quanto a quais aspectos?",
+        alternativas: [
+          "Apenas a criação de leis e impostos.",
+          "Legislação própria, governo próprio e administração própria.",
+          "Somente a administração de serviços públicos.",
+          "Apenas no âmbito do Poder Executivo.",
+          "Legislação própria e dependência financeira do Estado."
+        ],
+        correta: 1 },
+      { titulo: "Título II", enunciado: "O território do Município pode ser alterado mediante o quê?",
+        alternativas: [
+          "Decisão do Prefeito.",
+          "Decreto Estadual.",
+          "Lei Estadual, com consulta à população interessada por plebiscito.",
+          "Ato da União.",
+          "Resolução da Câmara Municipal."
+        ],
+        correta: 2 },
+      { titulo: "Título IV", enunciado: "A Câmara Municipal é composta por quantos vereadores, segundo a Lei Orgânica?",
+        alternativas: [
+          "10",
+          "9",
+          "11",
+          "13",
+          "15"
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "O mandato dos vereadores é de quanto tempo?",
+        alternativas: [
+          "2 anos.",
+          "3 anos.",
+          "4 anos.",
+          "5 anos.",
+          "6 anos."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "Qual das funções abaixo não é típica da Câmara Municipal?",
+        alternativas: [
+          "Fiscalizar atos do Executivo.",
+          "Julgar o Prefeito.",
+          "Executar obras públicas.",
+          "Legislar sobre assuntos municipais.",
+          "Deliberar sobre o plano diretor."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "O Prefeito e o Vice-Prefeito são eleitos por qual sistema?",
+        alternativas: [
+          "Voto indireto.",
+          "Nomeação pelo Governador.",
+          "Voto direto e simultâneo.",
+          "Indicação da Câmara.",
+          "Indicação do Presidente da República."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "Qual é o tempo de mandato do Prefeito de São João da Boa Vista?",
+        alternativas: [
+          "2 anos.",
+          "3 anos.",
+          "4 anos.",
+          "5 anos.",
+          "6 anos."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "O Prefeito pode ser reeleito para mais um mandato consecutivo?",
+        alternativas: [
+          "Não.",
+          "Sim, por tempo indeterminado.",
+          "Sim, apenas uma vez.",
+          "Somente com aprovação da Câmara.",
+          "Apenas se houver plebiscito."
+        ],
+        correta: 2
+      },
+      { titulo: "Título IV", enunciado: "Quando ocorre a posse dos vereadores, Prefeito e Vice-Prefeito?",
+        alternativas: [
+          "1º de dezembro.",
+          "1º de janeiro.",
+          "2 de janeiro.",
+          "31 de dezembro.",
+          "15 de novembro."
+        ],
+        correta: 1
+      },
+      { titulo: "Título IV", enunciado: "Qual das opções representa uma hipótese de vacância do cargo de Prefeito?",
+        alternativas: [
+          "Assinatura de convênio.",
+          "Participação em evento oficial.",
+          "Renúncia.",
+          "Aprovação de orçamento.",
+          "Apresentação de projeto de lei."
+        ],
+        correta: 2
+      
+},
+{ titulo: "Título III", enunciado: "Quem julga as contas do Prefeito após o parecer do Tribunal de Contas?",
+  alternativas: [
+    "A própria Prefeitura.",
+    "O Senado Federal.",
+    "A Câmara Municipal.",
+    "O Ministério Público.",
+    "O Governador do Estado."
+  ],
+  correta: 2
+},
+{ titulo: "Título III", enunciado: "As leis municipais são sancionadas por quem?",
+  alternativas: [
+    "Pelo Presidente da Câmara.",
+    "Pelo Tribunal de Contas.",
+    "Pelo Governador do Estado.",
+    "Pelo Prefeito.",
+    "Pelo Vice-Prefeito."
+  ],
+  correta: 3
+},
+{ titulo: "Título III", enunciado: "Qual o quórum mínimo para aprovação de emendas à Lei Orgânica?",
+  alternativas: [
+    "Maioria simples dos presentes.",
+    "Dois terços dos membros da Câmara.",
+    "Unanimidade dos vereadores.",
+    "Metade mais um dos membros.",
+    "Apenas com plebiscito."
+  ],
+  correta: 1
+},
+{ titulo: "Título III", enunciado: "Qual a periodicidade das sessões legislativas ordinárias?",
+  alternativas: [
+    "Mensal.",
+    "Semanal.",
+    "Bimestral.",
+    "Anual.",
+    "Semestral."
+  ],
+  correta: 3
+},
+{ titulo: "Título III", enunciado: "O que ocorre se o Prefeito não sancionar um projeto aprovado pela Câmara?",
+  alternativas: [
+    "O projeto é arquivado.",
+    "O projeto é devolvido à Câmara.",
+    "O projeto é sancionado automaticamente.",
+    "O projeto é encaminhado ao Judiciário.",
+    "O projeto perde validade."
+  ],
+  correta: 2
+},
+{ titulo: "Título III", enunciado: "A fiscalização contábil, financeira e orçamentária do Município é exercida por quem?",
+  alternativas: [
+    "Pelo Prefeito.",
+    "Pelo Vice-Prefeito.",
+    "Pela Câmara Municipal com auxílio do Tribunal de Contas.",
+    "Pelo Ministério Público Estadual.",
+    "Pela Receita Federal."
+  ],
+  correta: 2
+},
+{ titulo: "Título III", enunciado: "Quem pode apresentar projetos de lei no Município?",
+  alternativas: [
+    "Apenas o Prefeito.",
+    "Apenas os vereadores.",
+    "O Prefeito, os vereadores e os cidadãos, nos casos previstos.",
+    "Somente o Presidente da Câmara.",
+    "Apenas a Mesa Diretora."
+  ],
+  correta: 2
+},
+{ titulo: "Título III", enunciado: "Quem preside a Câmara Municipal?",
+  alternativas: [
+    "O vereador mais votado.",
+    "O Prefeito.",
+    "O Vice-Prefeito.",
+    "Um vereador eleito pelos demais.",
+    "O Governador do Estado."
+  ],
+  correta: 3
+},
+{ titulo: "Título III", enunciado: "Qual das alternativas expressa uma atribuição do Prefeito?",
+  alternativas: [
+    "Julgar as contas da Câmara.",
+    "Legislar sobre o Código Civil.",
+    "Prestar contas da administração anualmente.",
+    "Elaborar pareceres contábeis.",
+    "Autorizar renúncia de receita da União."
+  ],
+  correta: 2
+},
+{ titulo: "Título III", enunciado: "Em caso de impedimento do Prefeito e do Vice, quem assume?",
+  alternativas: [
+    "O Governador do Estado.",
+    "O Presidente da Câmara Municipal.",
+    "O vereador mais antigo.",
+    "O Presidente do Tribunal de Justiça.",
+    "O Secretário Municipal mais antigo."
+  ],
+  correta: 1
+}
+
+// TÍTULO VI – DISPOSIÇÕES GERAIS E TRANSITÓRIAS
+{ titulo: "Título VI", enunciado: "Qual é o objetivo das disposições transitórias na Lei Orgânica?" },
+{ titulo: "Título VI", enunciado: "As disposições gerais da Lei Orgânica tratam de:" },
+{ titulo: "Título VI", enunciado: "A Lei Orgânica pode ser emendada por iniciativa de:" },
+{ titulo: "Título VI", enunciado: "O processo de emenda à Lei Orgânica exige aprovação em quantos turnos?" },
+{ titulo: "Título VI", enunciado: "Qual o quórum necessário para aprovação de emenda à Lei Orgânica?" },
+{ titulo: "Título VI", enunciado: "A Lei Orgânica entra em vigor quando?" },
+{ titulo: "Título VI", enunciado: "A revogação da Lei Orgânica anterior ocorre de que forma?" },
+{ titulo: "Título VI", enunciado: "As normas de transição são necessárias para:" },
+{ titulo: "Título VI", enunciado: "Quem promulga a Lei Orgânica?" },
+{ titulo: "Título VI", enunciado: "Os efeitos da Lei Orgânica são obrigatórios para:" },
+{ titulo: "Título VI", enunciado: "As leis ordinárias municipais devem estar em conformidade com:" },
+{ titulo: "Título VI", enunciado: "O descumprimento da Lei Orgânica pode acarretar:" },
+{ titulo: "Título VI", enunciado: "A Câmara Municipal deve rever a Lei Orgânica:" },
+{ titulo: "Título VI", enunciado: "Qual princípio rege a interpretação das normas da Lei Orgânica?" },
+{ titulo: "Título VI", enunciado: "A promulgação da Lei Orgânica requer maioria de votos de quantos vereadores?" },
+{ titulo: "Título VI", enunciado: "A Lei Orgânica poderá ser alterada mediante:" },
+{ titulo: "Título VI", enunciado: "A transição de uma norma anterior para nova deve observar o princípio da:" },
+{ titulo: "Título VI", enunciado: "A Lei Orgânica assegura o direito adquirido?" },
+{ titulo: "Título VI", enunciado: "As disposições transitórias podem conter:" },
+{ titulo: "Título VI", enunciado: "Quem deve cumprir as normas da Lei Orgânica?" }];
+
+    const quiz = document.getElementById('quiz');
+
+    questoes.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'questao';
+
+      const enunciado = document.createElement('p');
+      enunciado.textContent = `${i + 1}) ${q.enunciado}`;
+      div.appendChild(enunciado);
+
+      const altContainer = document.createElement('div');
+      altContainer.className = 'alternativas';
+
+      q.alternativas.forEach((texto, j) => {
+        const alt = document.createElement('div');
+        alt.className = 'alternativa';
+        alt.textContent = String.fromCharCode(65 + j) + ") " + texto;
+        alt.addEventListener('click', () => responder(i, j, alt));
+        altContainer.appendChild(alt);
+      });
+
+      div.appendChild(altContainer);
+
+      const botao = document.createElement('button');
+      botao.textContent = 'Responder';
+      botao.className = 'botao';
+      botao.addEventListener('click', () => mostrarResposta(i, div));
+      div.appendChild(botao);
+
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      div.appendChild(feedback);
+
+      quiz.appendChild(div);
+    });
+
+    $1
+
+    function filtrarQuestoes() {
+      const valorFiltro = document.getElementById('filtro').value;
+      const questoesRenderizadas = document.querySelectorAll('.questao');
+      questoesRenderizadas.forEach(q => q.remove());
+
+      questoes.forEach((q, i) => {
+        if (valorFiltro === 'todos' || q.titulo === valorFiltro) {
+          const div = document.createElement('div');
+          div.className = 'questao';
+
+          const enunciado = document.createElement('p');
+          enunciado.textContent = `${i + 1}) ${q.enunciado}`;
+          div.appendChild(enunciado);
+
+          const altContainer = document.createElement('div');
+          altContainer.className = 'alternativas';
+
+          q.alternativas.forEach((texto, j) => {
+            const alt = document.createElement('div');
+            alt.className = 'alternativa';
+            alt.textContent = String.fromCharCode(65 + j) + ") " + texto;
+            alt.addEventListener('click', () => responder(i, j, alt));
+            altContainer.appendChild(alt);
+          });
+
+          div.appendChild(altContainer);
+
+          const botao = document.createElement('button');
+          botao.textContent = 'Responder';
+          botao.className = 'botao';
+          botao.addEventListener('click', () => mostrarResposta(i, div));
+          div.appendChild(botao);
+
+          const feedback = document.createElement('div');
+          feedback.className = 'feedback';
+          div.appendChild(feedback);
+
+          quiz.appendChild(div);
+        }
+      });
+    }
+
+    window.onload = filtrarQuestoes;
+
+    function responder(questaoIndex, altIndex, altElemento) {
+      const alternativas = altElemento.parentElement.querySelectorAll('.alternativa');
+      alternativas.forEach(a => a.classList.remove('selecionada'));
+      altElemento.classList.add('selecionada');
+      respostas[questaoIndex] = altIndex;
+    }
+
+    function mostrarResposta(questaoIndex, divQuestao) {
+      const correta = questoes[questaoIndex].correta;
+      const escolhida = respostas[questaoIndex];
+      const alternativas = divQuestao.querySelectorAll('.alternativa');
+
+      alternativas.forEach((a, i) => {
+        a.classList.remove('correta', 'errada');
+        if (i === correta) a.classList.add('correta');
+        if (i === escolhida && i !== correta) a.classList.add('errada');
+      });
+
+      const feedback = divQuestao.querySelector('.feedback');
+      if (escolhida === correta) {
+        feedback.textContent = 'Correta!';
+        feedback.className = 'feedback correto';
+      } else {
+        feedback.textContent = `Errada! Opção correta: ${String.fromCharCode(65 + correta)}`;
+        feedback.className = 'feedback errado';
+      }
+    }
+  </script>
+</body>
+</html>
